@@ -1,5 +1,10 @@
 # Crypto Chief Go SDK — Offline Wallets & Transaction Signing
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/crypto-chiefs/cryptochief-offline-signer-go.svg)](https://pkg.go.dev/github.com/crypto-chiefs/cryptochief-offline-signer-go)
+[![SDK Docs](https://img.shields.io/badge/docs-SDK%20guide-2ea44f)](docs/integration.md)
+[![CI](https://github.com/crypto-chiefs/cryptochief-offline-signer-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/crypto-chiefs/cryptochief-offline-signer-go/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **Crypto Chief Offline Signer** is a Go (Golang) library for offline cryptocurrency
 wallet generation and transaction signing. It supports **EVM, Bitcoin, Litecoin,
 Bitcoin Cash, Dogecoin, TRON, TON, XRP Ledger and Solana** without network requests.
@@ -185,6 +190,13 @@ GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOFLAGS= CGO_ENABLED=0 go t
 
 Network isolation of the signing process is an OS policy; the SDK's checks
 verify code and dependencies.
+
+## Continuous integration
+
+GitHub Actions checks Linux and Windows with Go 1.24.3 and the latest stable Go.
+It runs the verification scripts and checks Go formatting on pushes to `main`
+and pull requests. Verification uses vendored dependencies with module downloads
+disabled. The workflow also supports manual runs.
 
 ## FAQ
 
