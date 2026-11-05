@@ -15,7 +15,7 @@ the signature and broadcasts the transaction.
 - Validate signing requests and compute their canonical approval digest.
 - Build from vendored dependencies in a network-isolated environment.
 
-Requires **Go 1.24.3+**. SDK version: `0.1.0`. Signing contract: `1`.
+Requires **Go 1.24.3+**. SDK version: `0.1.1`. Signing contract: `1`.
 
 [Quick start](#quick-start) · [Supported blockchains](#supported-blockchains) ·
 [Wallet generation](docs/wallets.md) ·
