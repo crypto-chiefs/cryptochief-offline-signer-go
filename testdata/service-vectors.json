@@ -1,0 +1,153 @@
+[
+  {
+    "name": "BTC_UTXO",
+    "request": {
+      "chain_family": "BTC_UTXO",
+      "hash_type": 1,
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "304402206cf4911349c5007616b74cfe8aa024906cb5a49afbfa454c59f6ed0c27d1467c02204bca1ccce5e3f516621f549ac6498d7e773dc2cdd98b002628a2bb1d1927d11b"
+  },
+  {
+    "name": "LITECOIN_UTXO",
+    "request": {
+      "chain_family": "LITECOIN_UTXO",
+      "hash_type": 1,
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "304402206cf4911349c5007616b74cfe8aa024906cb5a49afbfa454c59f6ed0c27d1467c02204bca1ccce5e3f516621f549ac6498d7e773dc2cdd98b002628a2bb1d1927d11b"
+  },
+  {
+    "name": "BTC_CASH_UTXO",
+    "request": {
+      "chain_family": "BTC_CASH_UTXO",
+      "hash_type": 65,
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "304402206cf4911349c5007616b74cfe8aa024906cb5a49afbfa454c59f6ed0c27d1467c02204bca1ccce5e3f516621f549ac6498d7e773dc2cdd98b002628a2bb1d1927d11b"
+  },
+  {
+    "name": "DOGECOIN_UTXO",
+    "request": {
+      "chain_family": "DOGECOIN_UTXO",
+      "hash_type": 1,
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "304402206cf4911349c5007616b74cfe8aa024906cb5a49afbfa454c59f6ed0c27d1467c02204bca1ccce5e3f516621f549ac6498d7e773dc2cdd98b002628a2bb1d1927d11b"
+  },
+  {
+    "name": "solana",
+    "request": {
+      "chain_family": "SOLANA",
+      "payload_hex": "6f66666c696e65207369676e696e672066697874757265",
+      "payload_type": "solana_message",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "1b4c342f1aee5e774d604f9305653069321c4eeb0a90c128468e1895fbeb7904ffbc17c6e8d2d6454d1396d1192ace9f7a884462a83b3dc5e55046bb32114108"
+  },
+  {
+    "name": "ton-cell",
+    "request": {
+      "chain_family": "TON",
+      "payload_hex": "b5ee9c724101010100060000080000002a05a6f044",
+      "payload_type": "ton_cell",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "80eb2e14efc4a771dc5d485ad3a6b61dc3aa09994c0567c3f15268d42d603c73543cb1af22e8e758a92c367fecef53f3701ec9470853746358598d0d4d473709"
+  },
+  {
+    "name": "ton-digest",
+    "request": {
+      "chain_family": "TON",
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "e47409fc0e872d8aa289a8065f68c583ac48870390ddc05f29f897427150d6d4bb494f4942e0e19f1bd688cdd46deee66621c18c5c0c120c4fa49c8b138b840c"
+  },
+  {
+    "name": "tron-raw",
+    "request": {
+      "chain_family": "TRON",
+      "payload_hex": "6f66666c696e65207369676e696e672066697874757265",
+      "payload_type": "tron_raw_data",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "cf1fc2c77c1ffea67d2c68250f38e97ce8216890147bc67848570c68aa4431ce53805272103c5d3a0c574513fd2e6c4ac3b68fcb86027a1c3d12a15844bd417200"
+  },
+  {
+    "name": "tron-digest",
+    "request": {
+      "chain_family": "TRON",
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "6cf4911349c5007616b74cfe8aa024906cb5a49afbfa454c59f6ed0c27d1467c4bca1ccce5e3f516621f549ac6498d7e773dc2cdd98b002628a2bb1d1927d11b00"
+  },
+  {
+    "name": "xrp-blob",
+    "request": {
+      "chain_family": "XRP_LEDGER",
+      "payload_hex": "6f66666c696e65207369676e696e672066697874757265",
+      "payload_type": "xrp_blob",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "304402201a80249ed8c54a717953a467b1690fef3f5736108cf521967c5ecd86853d07b202201d64647c94fc3852467861833ceaad3dadb6557b5ea24b95dfccad536ff67898"
+  },
+  {
+    "name": "xrp-digest",
+    "request": {
+      "chain_family": "XRP_LEDGER",
+      "payload_hex": "4200000000000000000000000000000000000000000000000000000000000000",
+      "payload_type": "digest",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "304402206cf4911349c5007616b74cfe8aa024906cb5a49afbfa454c59f6ed0c27d1467c02204bca1ccce5e3f516621f549ac6498d7e773dc2cdd98b002628a2bb1d1927d11b"
+  },
+  {
+    "name": "evm-legacy",
+    "request": {
+      "chain_id": "1",
+      "chain_family": "EVM",
+      "payload_hex": "e107148252089400000000000000000000000000000000000000028203e880808080",
+      "payload_type": "evm_transaction",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "",
+    "signed_tx_hex": "0xf86107148252089400000000000000000000000000000000000000028203e88025a02c3509186905f6add3b57639cf1680bfa876ce75de4e2d77c097e365499b3d7fa009979e13687d1d171d112bc06f93f1c33a797779bcf907535e209f84c8fcffef"
+  },
+  {
+    "name": "evm-1559",
+    "request": {
+      "chain_id": "1",
+      "chain_family": "EVM",
+      "payload_hex": "02e4010702148252089400000000000000000000000000000000000000028203e880c0808080",
+      "payload_type": "evm_transaction",
+      "version": 1
+    },
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "signature_hex": "",
+    "signed_tx_hex": "0x02f864010702148252089400000000000000000000000000000000000000028203e880c080a04b4c6461e864c9d1e3e3e87c0c83643379814b2a01a2e0b8bf40aef7ef8fd5e9a079f80e4aca3b495f29d120ed2a2fa48a6a32e42ae1551e7353ec083cbac4bd3a"
+  }
+]

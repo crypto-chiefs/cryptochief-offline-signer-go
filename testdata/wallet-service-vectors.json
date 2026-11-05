@@ -1,0 +1,170 @@
+[
+  {
+    "chain_family": "EVM",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "TRON",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "TMVQGm1qAQYVdetCeGRRkTWYYrLXuHK2HC",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "SOLANA",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "6ASf5EcmmEHTgDJ4X4ZT5vT6iHVJBXPg5AN5YoTCpGWt",
+    "public_key_hex": "4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29"
+  },
+  {
+    "chain_family": "TON",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "EQAkxuybaeBflbgYW3vgQvcFgyAQVcLtXZwdrpeLNqzZ000c",
+    "public_key_hex": "4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29"
+  },
+  {
+    "chain_family": "XRP_LEDGER",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "rBgGZ9tc4him9KBzD8fKFiQz3fSZpaSwMH",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "XRP_LEDGER_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "rBgGZ9tc4him9KBzD8fKFiQz3fSZpaSwMH",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "BTC_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "BTC_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "LITECOIN_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "ltc1qw508d6qejxtdg4y5r3zarvary0c5xw7kgmn4n9",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "LITECOIN_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "tltc1qw508d6qejxtdg4y5r3zarvary0c5xw7klfsuq0",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "BTC_CASH_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "bitcoincash:qp63uahgrxged4z5jswyt5dn5v3lzsem6cy4spdc2h",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "BTC_CASH_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "bchtest:qp63uahgrxged4z5jswyt5dn5v3lzsem6cq85x00dt",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "DOGECOIN_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "DFpN6QqFfUm3gKNaxN6tNcab1FArL9cZLE",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "DOGECOIN_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+    "address": "nesRpRaAbTDmZHwmzBkLd2AtF7Z9L9z5S2",
+    "public_key_hex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+  },
+  {
+    "chain_family": "EVM",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "0x2B5AD5c4795c026514f8317c7a215E218DcCD6cF",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "TRON",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "TDvSsdrNM5eeXNL3czpa6AxLDHZA9nwe9K",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "SOLANA",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "8pM1DN3RiT8vbom5u1sNryaNT1nyL8CTTW3b5PwWXRBH",
+    "public_key_hex": "7422b9887598068e32c4448a949adb290d0f4e35b9e01b0ee5f1a1e600fe2674"
+  },
+  {
+    "chain_family": "TON",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "EQBpuxKb5zcCDcKk-tJDY2YVM9RuG3igJjhls90VDnMPEVof",
+    "public_key_hex": "7422b9887598068e32c4448a949adb290d0f4e35b9e01b0ee5f1a1e600fe2674"
+  },
+  {
+    "chain_family": "XRP_LEDGER",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "rcM6pp3HTU5AS3Z122kH3w3AzerJRnZ1P",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "XRP_LEDGER_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "rcM6pp3HTU5AS3Z122kH3w3AzerJRnZ1P",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "BTC_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "bc1qq6hag67dl53wl99vzg42z8eyzfz2xlkvxechjp",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "BTC_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "tb1qq6hag67dl53wl99vzg42z8eyzfz2xlkvvlryfj",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "LITECOIN_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "ltc1qq6hag67dl53wl99vzg42z8eyzfz2xlkvz9zn23",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "LITECOIN_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "tltc1qq6hag67dl53wl99vzg42z8eyzfz2xlkv4hp6em",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "BTC_CASH_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "bitcoincash:qqr2l4rteh7j9mu54sfz4gglysfyfgm7esufu9gq2x",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "BTC_CASH_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "bchtest:qqr2l4rteh7j9mu54sfz4gglysfyfgm7escmcz2hd6",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "DOGECOIN_UTXO",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "D5kTEGxmas71USKAcAaJptKjq8NJc6EK8C",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  },
+  {
+    "chain_family": "DOGECOIN_UTXO_TESTNET",
+    "key_hex": "0000000000000000000000000000000000000000000000000000000000000002",
+    "address": "nUoWxHhgWqZjMQtMdzDm5Hv34zkbacZa64",
+    "public_key_hex": "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+  }
+]
