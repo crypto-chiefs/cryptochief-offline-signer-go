@@ -3,6 +3,7 @@ module github.com/crypto-chiefs/cryptochief-offline-signer-go
 go 1.24.3
 
 require (
+	filippo.io/edwards25519 v1.1.0
 	github.com/btcsuite/btcd/btcec/v2 v2.3.6
 	github.com/ethereum/go-ethereum v1.16.7
 	github.com/xssnick/tonutils-go v1.15.5

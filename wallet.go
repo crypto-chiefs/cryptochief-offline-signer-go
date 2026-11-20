@@ -228,7 +228,11 @@ func walletToFiveBits(b []byte) []byte {
 }
 
 func walletWitnessAddress(hrp string, hash []byte) string {
-	data := append([]byte{0}, walletToFiveBits(hash)...)
+	return encodeWitnessProgram(hrp, 0, hash)
+}
+
+func encodeWitnessProgram(hrp string, version byte, program []byte) string {
+	data := append([]byte{version}, walletToFiveBits(program)...)
 	var expanded []byte
 	for _, v := range []byte(hrp) {
 		expanded = append(expanded, v>>5)
@@ -250,7 +254,11 @@ func walletWitnessAddress(hrp string, hash []byte) string {
 			}
 		}
 	}
-	polymod ^= 1
+	if version == 0 {
+		polymod ^= 1
+	} else {
+		polymod ^= 0x2bc830a3 // Bech32m for witness versions 1 through 16
+	}
 	for i := 0; i < 6; i++ {
 		data = append(data, byte((polymod>>uint(5*(5-i)))&31))
 	}
@@ -265,7 +273,11 @@ func walletWitnessAddress(hrp string, hash []byte) string {
 
 // Port of wallet-service btc.go's CashAddr P2PKH encoder.
 func walletCashAddress(prefix string, hash []byte) string {
-	data := walletToFiveBits(append([]byte{0}, hash...))
+	return encodeCashAddress(prefix, 0, hash)
+}
+
+func encodeCashAddress(prefix string, version byte, hash []byte) string {
+	data := walletToFiveBits(append([]byte{version}, hash...))
 	var expanded []byte
 	for _, v := range []byte(prefix) {
 		expanded = append(expanded, v&31)

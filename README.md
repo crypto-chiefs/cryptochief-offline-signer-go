@@ -18,9 +18,10 @@ the signature and broadcasts the transaction.
 - Derive addresses and public keys from an existing key buffer.
 - Sign prepared transactions, UTXO input hashes and TRON TIP-191 messages.
 - Validate signing requests and compute their canonical approval digest.
+- Inspect transfers before approval with the public wallet record.
 - Build from vendored dependencies in a network-isolated environment.
 
-Requires **Go 1.24.3+**. SDK version: `0.1.1`. Signing contract: `1`.
+Requires **Go 1.24.3+**. SDK version: `0.2.0`. Signing contract: `1`.
 
 [Quick start](#quick-start) · [Supported blockchains](#supported-blockchains) ·
 [Wallet generation](docs/wallets.md) ·

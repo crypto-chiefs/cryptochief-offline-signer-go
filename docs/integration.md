@@ -50,9 +50,25 @@ Use `DecodeRequest`, then `CanonicalRequest` or `RequestDigest`. Verify the
 approval signature and all bindings before signing. Recheck the request digest
 immediately before `Sign`; do not change the approved request.
 
-The verifier checks amounts, recipients, contract calls, memo/tag and fees against
-the payment intent. A precomputed digest does not expose those fields to the SDK.
-Approving only `payload_hex` leaves fields such as EVM `chain_id` unbound.
+Call `InspectTransfer(req, wallet, ctx)` with the decoded request and the public
+wallet selected from your registry. Check every transfer against the order and
+bind the returned `PayloadDigest` to the approval. A decoding error returns an
+empty result. The function uses public data and performs no network calls.
+
+| Family | Accepted forms and context |
+| --- | --- |
+| EVM | Unsigned legacy or EIP-1559 transaction, native payment or direct ERC-20 transfer. The selected public key determines the sender. Verify the returned chain ID and gas fee ceiling. |
+| TRON | Serialized Transaction.raw, native TRX or direct TRC-20 transfer. A digest request needs the original raw bytes in `InspectionContext.PayloadHex`. |
+| TON | V4R2 ordinary sends, native TON or TEP-74 transfer. Supply the original signing BOC for digest requests. Match the jetton-wallet contract against a trusted wallet-to-master mapping. |
+| Solana | Legacy or static-account v0 message, native SOL or classic SPL transfer. Supply the expected mint for plain SPL Transfer when the transaction omits it. Supply the expected recipient owner to verify its associated token account. |
+| XRP Ledger mainnet and testnet | Single-signing direct Payment in XRP or issued currency. Supply the serialized signing fields without the STX prefix for digest requests. Match destination tag and issuer. |
+| Bitcoin, Litecoin, Bitcoin Cash and Dogecoin, mainnet and testnet | For each requested input digest, supply the serialized unsigned transaction in `PayloadHex`, its zero-based `InputIndex`, and the complete funding transactions in `PreviousTransactions`. Every input must spend from the selected wallet. The inspector returns every output, including change, and the transaction fee. |
+
+Amounts are strings in integer base units, except XRP issued amounts, which
+use exact decimal strings. A token name and decimal precision come from the
+verifier's own asset registry. For network fees that require chain state, an
+absent fee field means the amount is unknown. The result describes signed
+instructions. Contract execution, token behavior and delivery depend on chain state.
 
 For `SignBatch`, approve every ordered request and the batch context. For
 `SignTRONMessage`, bind the exact message, prefix mode and `operation_type=message`.
