@@ -1,4 +1,4 @@
-module github.com/crypto-chiefs/cryptochief-offline-signer-go
+module github.com/crypto-chiefs/cryptochief-offline-signer-go/v2
 
 go 1.24.3
 

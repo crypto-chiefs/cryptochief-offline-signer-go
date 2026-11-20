@@ -1,233 +1,62 @@
-# Crypto Chief Go SDK — Offline Wallets & Transaction Signing
+# CryptoChief Offline Signer for Go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/crypto-chiefs/cryptochief-offline-signer-go.svg)](https://pkg.go.dev/github.com/crypto-chiefs/cryptochief-offline-signer-go)
-[![SDK Docs](https://img.shields.io/badge/docs-SDK%20guide-2ea44f)](docs/integration.md)
+[![Go Reference](https://pkg.go.dev/badge/github.com/crypto-chiefs/cryptochief-offline-signer-go/v2.svg)](https://pkg.go.dev/github.com/crypto-chiefs/cryptochief-offline-signer-go/v2)
 [![CI](https://github.com/crypto-chiefs/cryptochief-offline-signer-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/crypto-chiefs/cryptochief-offline-signer-go/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Crypto Chief Offline Signer** is a Go (Golang) library for offline cryptocurrency
-wallet generation and transaction signing. It supports **EVM, Bitcoin, Litecoin,
-Bitcoin Cash, Dogecoin, TRON, TON, XRP Ledger and Solana** without network requests.
-EVM networks include Ethereum, BNB Smart Chain, Polygon, Arbitrum, Optimism and Avalanche C-Chain.
+Decode a proposed transfer before signing it. The SDK returns the sender, recipients, amounts and assets using the registered public wallet. Wallet generation, inspection and signing run offline.
 
-Use it in a merchant's non-custodial signing service. Crypto Chief prepares the
-transaction, the merchant approves it, the SDK signs it, and Crypto Chief attaches
-the signature and broadcasts the transaction.
+## Install v2
 
-- Generate private keys and blockchain addresses locally.
-- Derive addresses and public keys from an existing key buffer.
-- Sign prepared transactions, UTXO input hashes and TRON TIP-191 messages.
-- Validate signing requests and compute their canonical approval digest.
-- Inspect transfers before approval with the public wallet record.
-- Build from vendored dependencies in a network-isolated environment.
-
-Requires **Go 1.24.3+**. SDK version: `0.2.0`. Signing contract: `1`.
-
-[Quick start](#quick-start) · [Supported blockchains](#supported-blockchains) ·
-[Wallet generation](docs/wallets.md) ·
-[Signing reference](docs/signing.md) · [Integration guide](docs/integration.md)
-
-## Install
-
-Run from your application's Go module directory:
+Requires Go 1.24.3 or later.
 
 ```sh
-go get github.com/crypto-chiefs/cryptochief-offline-signer-go@latest
+go get github.com/crypto-chiefs/cryptochief-offline-signer-go/v2@v2.0.0
 ```
 
-Import the package as `signer`:
+To upgrade from v0.x, add `/v2` to Go imports. Keep `"version": 1` in SDK signing requests.
+
+## Inspect a signing request
+
+After verifying a `wallet.signature.requested` webhook, pass its nested `request` object to `DecodeSigningRequest`. Select the public wallet for the project and network from your registry. Inspection requires its address and public key.
 
 ```go
-import signer "github.com/crypto-chiefs/cryptochief-offline-signer-go"
-```
+package merchant
 
-For offline deployment, install dependencies before network isolation. After
-adding your imports, run `go mod tidy` and `go mod vendor`. Transfer the application
-with `go.mod`, `go.sum`, `vendor` and the Go toolchain; build with `-mod=vendor`.
+import signer "github.com/crypto-chiefs/cryptochief-offline-signer-go/v2"
 
-## Quick start
-
-Generate a Bitcoin SegWit wallet and verify its public record:
-
-```go
-package main
-
-import (
-    "fmt"
-
-    signer "github.com/crypto-chiefs/cryptochief-offline-signer-go"
-)
-
-func main() {
-    options := signer.WalletOptions{Family: signer.BTC}
-    wallet, privateKey, err := signer.GenerateWallet(options)
+func Preview(requestJSON []byte, wallet signer.Wallet) (signer.Inspection, error) {
+    prepared, err := signer.DecodeSigningRequest(requestJSON)
     if err != nil {
-        panic(err)
+        return signer.Inspection{}, err
     }
-    defer clear(privateKey)
-
-    restored, err := signer.DeriveWallet(options, privateKey)
-    if err != nil {
-        panic(err)
-    }
-    if restored.Address != wallet.Address || restored.PublicKeyHex != wallet.PublicKeyHex {
-        panic("wallet mismatch")
-    }
-    fmt.Println(wallet.Address)
+    return prepared.Inspect(wallet)
 }
 ```
 
-This example creates a temporary wallet. In a signing service, store the private
-key securely before registering the public wallet record. `Wallet` contains no
-private key; the separate secret result is always 32 raw bytes.
+Read **every** entry in `Inspection.Transfers`. Each has `From`, `To`, `Asset` and either `AmountAtomic` (integer base units) or `AmountDecimal` (XRP issued currency). The result describes the unsigned instructions. An unknown operation or a missing source transaction for a digest returns an error.
 
-See [wallet generation](docs/wallets.md) for options, return fields, testnet formats
-and verification of stored keys.
+If you already have a `signer.Request`, call `signer.InspectTransfer(req, wallet, ctx)` directly. Run `go test -run '^ExampleInspectTransfer$'` in this repository for a complete example. [Transfer inspection](docs/inspection.md) · [Example source](example_test.go)
 
-## Supported blockchains
+## Supported transfers
 
-| Family | Go constant | Wallet address |
-|---|---|---|
-| EVM: Ethereum, BNB Smart Chain, Polygon, Arbitrum, Optimism, Avalanche C-Chain | `EVM` | EIP-55 |
-| Bitcoin | `BTC` | Native SegWit P2WPKH, `bc1` |
-| Litecoin | `LTC` | Native SegWit P2WPKH, `ltc1` |
-| Bitcoin Cash | `BCH` | P2PKH CashAddr, `bitcoincash:` |
-| Dogecoin | `DOGE` | P2PKH Base58Check |
-| TRON | `TRON` | Base58Check, `T…` |
-| TON | `TON` | V4R2, workchain 0, subwallet ID 698983191 |
-| XRP Ledger | `XRP` | Classic `r…` address, secp256k1 |
-| Solana | `Solana` | Base58 Ed25519 public key |
+| Family | Payments |
+| --- | --- |
+| EVM | Native coin and direct ERC-20 transfers in legacy and EIP-1559 transactions |
+| Bitcoin, Litecoin, Bitcoin Cash, Dogecoin | Native payments and change, mainnet and testnet |
+| TRON | TRX and direct TRC-20 transfers |
+| TON | V4R2 native transfers and TEP-74 jetton transfers |
+| XRP Ledger | Direct XRP and issued-currency payments, mainnet and testnet |
+| Solana | Native SOL and classic SPL Token transfers |
 
-Testnet constants: `BTCTestnet`, `LTCTestnet`, `BCHTestnet`, `DOGETestnet`,
-`XRPTestnet`. EVM, TRON and Solana retain their family identifiers across mainnets and testnets.
-For TON, set `WalletOptions.TONTestnet`; `TONNonBounceable` selects a non-bounceable
-address. Both flags affect the address representation, not the TON account ID.
+EVM, TRON, TON and Solana share their family identifier across networks. Verify the network from the authenticated webhook against the order.
 
-The merchant service binds each key to its network. Wallet roles such as master,
-transit and static are registry metadata.
+## Generate and sign
 
-## Sign a prepared transaction
+`GenerateWallet` returns a public wallet and a separate private key. `DeriveWallet` reconstructs the public record from an existing key. After approval, `Sign` signs one prepared request. `SignBatch` signs multiple requests with the same key. For an EVM callback, the signing service attaches the returned signature and sends the serialized transaction as `signed_tx_hex`.
 
-Pass the approved JSON request and the corresponding raw private key to the SDK:
+[Wallet generation](docs/wallets.md) · [Signing formats](docs/signing.md) · [Callback integration](docs/integration.md)
 
-```go
-package merchantsigner
+## Verify the build
 
-import signer "github.com/crypto-chiefs/cryptochief-offline-signer-go"
-
-// SignApprovedPayload requires prior authorization of the complete request,
-// network, operation and key binding by the merchant service.
-func SignApprovedPayload(rawJSON, privateKey []byte) (signer.Signature, error) {
-    request, err := signer.DecodeRequest(rawJSON)
-    if err != nil {
-        return signer.Signature{}, err
-    }
-    return signer.Sign(request, privateKey)
-}
-```
-
-`DecodeRequest` rejects malformed payloads, unknown or duplicate fields, nulls
-and trailing JSON. It does not authorize a payment. `Sign` returns the signature
-and public verification data; Crypto Chief assembles the signed transaction.
-
-For multiple UTXO inputs, use `SignBatch(requests, privateKey)`: one prepared
-sighash per input, one key per batch. Results retain input order. Any error
-returns no signatures.
-
-See the [payload and response formats](docs/signing.md) and
-[merchant approval contract](docs/integration.md#request-approval).
-
-## TRON message signing
-
-`SignTRONMessage(message, prefixMode, privateKey)` signs TIP-191 messages.
-Choose `TRONPrefixV2` or `TRONPrefixLegacy32` explicitly. Messages are literal
-UTF-8, up to 512 bytes; hex-looking text is not decoded.
-
-The returned recovery byte is `0` or `1`. A TronLink-compatible message signature
-uses `27` or `28`; convert that byte in the calling application.
-
-## API reference
-
-| Function | Result |
-|---|---|
-| `GenerateWallet(options)` | Public `Wallet` and a separate 32-byte private key |
-| `DeriveWallet(options, privateKey)` | Address and public key for registry verification |
-| `Sign(request, privateKey)` | Signature for one prepared payload |
-| `SignBatch(requests, privateKey)` | Ordered signatures using one key |
-| `DecodeRequest(rawJSON)` | Strictly decoded and validated `Request` |
-| `ValidateRequest(request)` | Payload validation without a private key |
-| `CanonicalRequest(request)` | Canonical JSON bytes for request approval |
-| `RequestDigest(request)` | SHA-256 of the complete canonical request |
-| `TRONMessageDigest(message, prefixMode)` | TIP-191 signing digest |
-| `SignTRONMessage(message, prefixMode, privateKey)` | TIP-191 signature |
-
-Private keys are raw 32-byte secp256k1 scalars or Ed25519 seeds. TON and Solana
-also accept a consistent 64-byte Ed25519 private key. The SDK does not decode
-hex/base64 keys, pad short keys or modify the caller's key buffer.
-
-## Build without network access
-
-On Linux, run from the SDK directory:
-
-```sh
-sh ./verify.sh
-```
-
-On Windows, use PowerShell:
-
-```powershell
-./verify.ps1
-```
-
-Both scripts reject network and process-launch imports, build
-for Windows/Linux amd64 with CGO disabled, and run tests and `go vet` on the host.
-
-For a standalone SDK build on a POSIX shell:
-
-```sh
-GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOFLAGS= CGO_ENABLED=0 go build -mod=vendor ./...
-GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOWORK=off GOFLAGS= CGO_ENABLED=0 go test -mod=vendor ./...
-```
-
-Network isolation of the signing process is an OS policy; the SDK's checks
-verify code and dependencies.
-
-## Continuous integration
-
-GitHub Actions checks Linux and Windows with Go 1.24.3 and the latest stable Go.
-It runs the verification scripts and checks Go formatting on pushes to `main`
-and pull requests. Verification uses vendored dependencies with module downloads
-disabled. The workflow also supports manual runs.
-
-## FAQ
-
-### Does the SDK make RPC, HTTP or internal network requests?
-
-No. Wallet generation, derivation, hashing and signing are local operations.
-The package has no network client, key storage, environment configuration or logging.
-
-### Who builds and broadcasts transactions?
-
-Crypto Chief. Fee estimation, nonce/UTXO/seqno/blockhash selection, transaction
-assembly, broadcast and confirmation tracking remain outside this library.
-
-### Are TON memos and XRP destination tags supported?
-
-TON comments and XRP destination tags are included in the prepared payload.
-The SDK signs those bytes without replacing the memo or tag. The current
-transaction builder supports XRP DestinationTag, including zero, but does not
-create textual XRPL `Memos`.
-
-### Does signing validate the amount or recipient?
-
-The merchant's verifier checks payment intent before signing. The SDK validates
-its request format and cryptographic inputs. It cannot recover payment details
-from a precomputed digest.
-
-## Documentation
-
-- [Wallet generation](docs/wallets.md): methods, address formats, TON options and key verification.
-- [Signing reference](docs/signing.md): fields, payload types, signatures and limits.
-- [Integration guide](docs/integration.md): approvals, key handling and transaction assembly.
-- [Runnable Go examples](example_test.go): wallet generation, prepared signing and TIP-191.
-- [Crypto Chief Processing Go SDK](https://github.com/crypto-chiefs/cryptochief-crypto-processing-go): network API client for payments, payouts and wallet management.
+Run `sh ./verify.sh` on Linux or `./verify.ps1` in PowerShell. The scripts use the vendored dependencies, build for Linux and Windows amd64, run the host tests and run `go vet`.

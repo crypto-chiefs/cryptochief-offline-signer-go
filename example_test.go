@@ -3,8 +3,58 @@ package signer_test
 import (
 	"fmt"
 
-	signer "github.com/crypto-chiefs/cryptochief-offline-signer-go"
+	signer "github.com/crypto-chiefs/cryptochief-offline-signer-go/v2"
 )
+
+// Public wallet record selected by the merchant before inspecting the request.
+var exampleWallet = signer.Wallet{
+	Family:       signer.EVM,
+	Address:      "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+	PublicKeyHex: "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+}
+
+func ExampleDecodeSigningRequest() {
+	// The request field of an authenticated wallet.signature.requested event.
+	raw := []byte(`{
+		"chain_family":"EVM", "address":"0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+		"tx":{
+			"chain_id":"0x1", "nonce":"0x7", "gas":"0xfde8",
+			"max_fee_per_gas":"0x14", "max_priority_fee_per_gas":"0x2", "value":"0x0",
+			"to":"0x2222222222222222222222222222222222222222",
+			"data":"0xa9059cbb000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000f4240"
+		}
+	}`)
+	prepared, err := signer.DecodeSigningRequest(raw)
+	if err != nil {
+		panic(err)
+	}
+	review, err := prepared.Inspect(exampleWallet)
+	if err != nil {
+		panic(err)
+	}
+	for _, transfer := range review.Transfers {
+		fmt.Println(transfer.From, transfer.To)
+		fmt.Println(transfer.AmountAtomic, transfer.Asset.Kind, transfer.Asset.Contract)
+	}
+	// Output:
+	// 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf 0x1111111111111111111111111111111111111111
+	// 1000000 token 0x2222222222222222222222222222222222222222
+}
+
+func ExampleInspectTransfer() {
+	req := signer.Request{
+		Version: 1, Family: signer.EVM, ChainID: "1", PayloadType: signer.EVMTransaction,
+		PayloadHex: "e107148252089411111111111111111111111111111111111111118203e880808080",
+	}
+	review, err := signer.InspectTransfer(req, exampleWallet, signer.InspectionContext{})
+	if err != nil {
+		panic(err)
+	}
+	for _, transfer := range review.Transfers {
+		fmt.Println(transfer.To, transfer.AmountAtomic, transfer.Asset.Kind)
+	}
+	// Output: 0x1111111111111111111111111111111111111111 1000 native
+}
 
 func ExampleGenerateWallet() {
 	options := signer.WalletOptions{Family: signer.BTC}

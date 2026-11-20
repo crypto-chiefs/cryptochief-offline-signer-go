@@ -1,7 +1,9 @@
 # Go Offline Signing API Reference
 
-All methods run locally. Requests contain public data prepared by Crypto Chief;
-private keys are passed as a separate byte slice.
+Use `DecodeSigningRequest` for the nested `request` in a processing webhook.
+Use `DecodeRequest` for the SDK JSON format below. SDK v2 uses version 1 of
+this format. Private keys are passed separately to `Sign`.
+[Inspect a transfer before signing](inspection.md)
 
 ## Request fields
 

@@ -25,7 +25,7 @@ import (
     "encoding/json"
     "fmt"
 
-    signer "github.com/crypto-chiefs/cryptochief-offline-signer-go"
+    signer "github.com/crypto-chiefs/cryptochief-offline-signer-go/v2"
 )
 
 func main() {
@@ -136,7 +136,7 @@ package wallets
 import (
     "errors"
 
-    signer "github.com/crypto-chiefs/cryptochief-offline-signer-go"
+    signer "github.com/crypto-chiefs/cryptochief-offline-signer-go/v2"
 )
 
 func CheckWallet(options signer.WalletOptions, privateKey []byte, expected signer.Wallet) error {

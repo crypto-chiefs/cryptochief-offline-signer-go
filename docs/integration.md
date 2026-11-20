@@ -1,122 +1,35 @@
-# Integrate the Go SDK into a Non-Custodial Signing Service
+# Integrate a merchant signer
 
-## Transaction flow
+## Receive a signing request
 
-1. Crypto Chief prepares the unsigned transaction or per-input signing hashes.
-2. The merchant service verifies the request, payment intent and key permissions.
-3. The isolated key process calls `Sign` or `SignBatch` with the approved payload.
-4. Crypto Chief attaches the returned signatures, broadcasts and tracks the transaction.
-
-This library supplies the local cryptographic operations. The HTTP contract,
-transaction-preparation endpoint and callback integration are separate components.
-The SDK is not a drop-in implementation of the processing client's `Transactions.Sign` API.
+1. Verify the webhook signature over the original body. Check `event`, `request_id`, `expires_at`, `project_id` and `network` against the expected operation.
+2. Read the nested `request` as `json.RawMessage` and pass it to `DecodeSigningRequest`. Choose the expected public wallet from the merchant's registry.
+3. Call `prepared.Inspect(wallet)`. Compare every transfer, fee and token identifier with the order. For digest inputs, inspection uses the source context supplied with the request. [Transfer inspection](inspection.md)
+4. After approval, call `Sign(prepared.Request, privateKey)`. Submit the result to the completion endpoint with the original `request_id` before expiry. Through White Label, use that installation's Merchant API.
 
 ## Wallet generation and storage
 
-See [wallet generation](wallets.md) for method signatures, options and examples.
-
-Generate new wallets with `GenerateWallet`. Store the returned private key through
-the key process; register only the public `Wallet` data. Keep project, network,
-key ID/version and wallet role in the registry.
-
-Before signing, call `DeriveWallet` and compare its address and public key against
-the trusted registry. Reuse the original `WalletOptions`, including TON address flags.
-
-| Key family | Accepted bytes |
-|---|---|
-| EVM, Bitcoin, Litecoin, Bitcoin Cash, Dogecoin, TRON, XRP Ledger | A valid 32-byte secp256k1 scalar |
-| TON, Solana | A 32-byte Ed25519 seed, or a consistent 64-byte `seed ‖ public key` |
-
-Keys are raw bytes, not hex/base64 strings. Key format must be explicit in storage
-metadata; decode a known storage encoding before calling the SDK. Do not trim,
-pad or infer formats from key contents.
-
-The SDK neither stores nor modifies the caller's key buffer. Clear that buffer
-after use. Go does not guarantee removal of every temporary copy from memory.
-Vault/KMS access, process isolation, key lifecycle, audit logs and recovery belong
-to the merchant service. Provision new keys for this integration; do not import
-keys from the previous signing service.
+Store the private key returned by `GenerateWallet` in the signing service. Register its public `Wallet` with the project, network and key identifier. Use `DeriveWallet` with the original options to verify the public record when loading an existing key. [Wallet generation](wallets.md)
 
 ## Request approval
 
-The external verifier must approve the complete canonical SDK request and bind:
+`Inspection.PayloadDigest` equals `RequestDigest(prepared.Request)`. Record the digest with the approved operation, project, network, key, request ID and expiry. If the verifier and signing process are separate, the signing process must recompute the digest before using the key. For UTXO batches, approve each input and verify the output list for the transaction.
 
-- Request ID, project and key ID/version.
-- Network, operation type and wallet permissions.
-- Issued-at and expiry times.
-- The canonical request bytes or `RequestDigest`.
+The application handles webhook authentication, replay protection and retries. On a repeated delivery for the same approved request, reuse the recorded result.
 
-Use `DecodeRequest`, then `CanonicalRequest` or `RequestDigest`. Verify the
-approval signature and all bindings before signing. Recheck the request digest
-immediately before `Sign`; do not change the approved request.
+## Return the signature
 
-Call `InspectTransfer(req, wallet, ctx)` with the decoded request and the public
-wallet selected from your registry. Check every transfer against the order and
-bind the returned `PayloadDigest` to the approval. A decoding error returns an
-empty result. The function uses public data and performs no network calls.
+Post `request_id` and `result` to `/v1/wallets/signatures/complete`.
 
-| Family | Accepted forms and context |
+| Family | `result` contents |
 | --- | --- |
-| EVM | Unsigned legacy or EIP-1559 transaction, native payment or direct ERC-20 transfer. The selected public key determines the sender. Verify the returned chain ID and gas fee ceiling. |
-| TRON | Serialized Transaction.raw, native TRX or direct TRC-20 transfer. A digest request needs the original raw bytes in `InspectionContext.PayloadHex`. |
-| TON | V4R2 ordinary sends, native TON or TEP-74 transfer. Supply the original signing BOC for digest requests. Match the jetton-wallet contract against a trusted wallet-to-master mapping. |
-| Solana | Legacy or static-account v0 message, native SOL or classic SPL transfer. Supply the expected mint for plain SPL Transfer when the transaction omits it. Supply the expected recipient owner to verify its associated token account. |
-| XRP Ledger mainnet and testnet | Single-signing direct Payment in XRP or issued currency. Supply the serialized signing fields without the STX prefix for digest requests. Match destination tag and issuer. |
-| Bitcoin, Litecoin, Bitcoin Cash and Dogecoin, mainnet and testnet | For each requested input digest, supply the serialized unsigned transaction in `PayloadHex`, its zero-based `InputIndex`, and the complete funding transactions in `PreviousTransactions`. Every input must spend from the selected wallet. The inspector returns every output, including change, and the transaction fee. |
+| EVM | Attach the SDK's 65-byte signature to the same unsigned transaction with the original chain ID. Return the complete serialized transaction in `signed_tx.signed_tx_hex` with a `0x` prefix. |
+| TRON | Set `signature.signature_hex` to the 65-byte transaction signature including recovery byte `0` or `1`. |
+| Bitcoin, Litecoin, Bitcoin Cash, Dogecoin, XRP Ledger | Set `signature.signature_hex` to the DER signature from `SignatureHex`. For UTXO callbacks, leave the sighash byte out of the signature. |
+| TON, Solana | Set `signature.signature_hex` to the 64-byte Ed25519 signature from `SignatureHex`. |
 
-Amounts are strings in integer base units, except XRP issued amounts, which
-use exact decimal strings. A token name and decimal precision come from the
-verifier's own asset registry. For network fees that require chain state, an
-absent fee field means the amount is unknown. The result describes signed
-instructions. Contract execution, token behavior and delivery depend on chain state.
+## Offline build
 
-For `SignBatch`, approve every ordered request and the batch context. For
-`SignTRONMessage`, bind the exact message, prefix mode and `operation_type=message`.
-A transaction permission does not authorize message signing. The SDK payload
-type `digest` is a byte format; operation permissions are checked separately.
+In the application module, run `go mod tidy` and `go mod vendor` before isolating the signing process. Build with `go build -mod=vendor ./...`. To verify the SDK checkout, run [verify.sh](../verify.sh) on Linux or [verify.ps1](../verify.ps1) in PowerShell.
 
-Replay protection, idempotency, freeze rules, receipts and administrator approvals
-are enforced by the merchant service.
-
-## Attach signatures in Crypto Chief
-
-| Family | Assembly rule |
-|---|---|
-| EVM | Prepare unsigned binary bytes for `EVMTransaction`; apply R‖S‖V with `Transaction.WithSignature` using the same chain ID |
-| Bitcoin, Litecoin, Bitcoin Cash, Dogecoin | Insert each signature and public key into the corresponding input's script or witness; use the required sighash byte |
-| TRON | Attach the R‖S‖V signature to the transaction containing the original `raw_data` |
-| TON | Insert the Ed25519 signature into the wallet message built from the original signing cell |
-| XRP Ledger | Add the DER signature to the transaction whose unsigned serialization was approved |
-| Solana | Insert the Ed25519 signature into the matching signer's slot without changing the compiled message |
-
-The existing EVM service request uses JSON fields. Its adapter must serialize them
-before calling the SDK and assemble the signed transaction afterward.
-
-If a TRON wrapper returns `signer_address`, derive it with `DeriveWallet` using
-the signing key. The receiving service compares this field when it is nonempty.
-The SDK response itself contains `PublicKeyHex`.
-
-Only TIP-191 clients that require TronLink's signature format convert recovery
-byte `0/1` to `27/28`. Transaction signatures retain `0/1`.
-
-## TON memos and XRP destination tags
-
-Crypto Chief places the TON comment or XRP DestinationTag in the unsigned payload.
-The verifier approves those fields before signing. Do not edit them afterward.
-For XRP, no tag and tag `0` are distinct. X-address network flags must match the
-selected network before conversion to a classic address.
-
-The current builder supports numeric XRP DestinationTag, not textual XRPL `Memos`.
-
-## Offline deployment
-
-Prepare the application, dependencies and Go toolchain before network isolation.
-Use vendored dependencies with `GOPROXY=off`, `GOSUMDB=off`, `GOTOOLCHAIN=local`
-and `-mod=vendor`. Run [verify.sh](../verify.sh) on Linux or
-[verify.ps1](../verify.ps1) in PowerShell to check SDK imports, builds and tests.
-
-Wallet registration, balance queries, transaction status and monitoring use the
-[Processing Go SDK](https://github.com/crypto-chiefs/cryptochief-crypto-processing-go)
-in a separate network-enabled component.
-
-[SDK overview](../README.md) · [Wallet generation](wallets.md) · [Signing reference](signing.md)
+[SDK overview](../README.md) · [Signing formats](signing.md)
