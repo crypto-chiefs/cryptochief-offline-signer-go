@@ -68,6 +68,11 @@ func TestInspectEVMPayments(t *testing.T) {
 	t.Run("unexpected source context", func(t *testing.T) {
 		assertPaymentRefused(t, legacy, paymentEVMWallet, InspectionContext{PayloadHex: legacy.PayloadHex}, ErrContext)
 	})
+	t.Run("inconsistent public wallet record", func(t *testing.T) {
+		other := paymentEVMWallet
+		other.Address = recipient.Hex()
+		assertPaymentRefused(t, legacy, other, InspectionContext{}, ErrSender)
+	})
 	t.Run("attached native value on token call", func(t *testing.T) {
 		assertPaymentRefused(t, token(data, 1), paymentEVMWallet, InspectionContext{}, ErrUnsupported)
 	})
@@ -122,6 +127,11 @@ func TestInspectTRONPayments(t *testing.T) {
 	t.Run("another owner", func(t *testing.T) {
 		other := paymentTRONWallet
 		other.Address = n.To
+		assertPaymentRefused(t, native, other, InspectionContext{}, ErrSender)
+	})
+	t.Run("public key differs from signing wallet", func(t *testing.T) {
+		other := paymentTRONWallet
+		other.PublicKeyHex = "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
 		assertPaymentRefused(t, native, other, InspectionContext{}, ErrSender)
 	})
 	t.Run("two contracts", func(t *testing.T) {
